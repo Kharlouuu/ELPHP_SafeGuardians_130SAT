@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
 
 class AuthController extends Controller
 {
+    //Register User
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -27,6 +29,7 @@ class AuthController extends Controller
         return response()->json(['success' => 'User registered successfully']);
     }
 
+    //Login User 
     public function login(Request $request)
     {
         $request->validate([
@@ -66,37 +69,43 @@ class AuthController extends Controller
         $user->reset_code = $code;
         $user->save();
 
-        Mail::raw("Your password reset code is: $code", function ($message) use ($user) {
-            $message->to($user->email)->subject('Password Reset Code');
-        });
+        try {
+            Mail::send('emails.reset-code', ['code' => $code], function ($message) use ($user) {
+                $message->to($user->email)
+                        ->subject('Password Reset Code');
+            });
+        } catch (\Exception $e) {
+            // fallback to raw email if Blade fails
+            Mail::raw("Your password reset code is: $code", function ($message) use ($user) {
+                $message->to($user->email)->subject('Password Reset Code');
+            });
+        }
 
         return response()->json(['success' => 'Code sent']);
     }
 
     public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'reset_code' => 'required',
-            'new_password' => 'required|min:6',
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+        'reset_code' => 'required',
+        'new_password' => 'required|min:6',
+    ]);
 
-        $user = User::where([
-            ['email', $request->email],
-            ['reset_code', $request->reset_code]
-        ])->first();
+    $user = User::where('email', $request->email)
+                ->where('reset_code', $request->reset_code)
+                ->first();
 
-        if (!$user) {
-            return response()->json(['error' => 'Invalid code']);
-        }
-
-        $user->password = Hash::make($request->new_password);
-        $user->reset_code = null;
-        $user->save();
-
-        return response()->json(['success' => 'Password reset']);
+    if (!$user) {
+        return response()->json(['error' => 'Invalid email or reset code'], 400);
     }
 
+    $user->password = Hash::make($request->new_password);
+    $user->reset_code = null; // clear the reset code once used
+    $user->save();
+
+    return response()->json(['success' => 'Password has been reset successfully']);
+}
     public function updateProfile(Request $request)
     {
         $request->validate([
