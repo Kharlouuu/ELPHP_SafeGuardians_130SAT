@@ -52,4 +52,20 @@ class SavingsController extends Controller
             'new_total_savings' => $newTotal,
         ]);
     }
+    public function getSavings(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|integer',
+        ]);
+
+        $savings = DB::table('savings')
+            ->where('user_id', $validated['user_id'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'savings' => $savings,
+        ]);
+    }
 }

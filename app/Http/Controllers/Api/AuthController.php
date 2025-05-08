@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -58,6 +59,17 @@ class AuthController extends Controller
     }
     
     return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+
+    //Get all the users
+    public function getAllUsers()
+    {
+        $users = DB::table('users')->select('id', 'username', 'email', 'created_at')->get();
+
+        return response()->json([
+            'success' => true,
+            'users' => $users,
+        ]);
     }
 
     //Forgot Password

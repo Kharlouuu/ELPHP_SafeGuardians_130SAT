@@ -27,11 +27,18 @@ Route::prefix('auth')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
 
-    //Transactions
-    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);   
-    Route::post('/add-savings', [SavingsController::class, 'addSavings']);
+    //Get All Users
+    Route::get('/users/list', [AuthController::class, 'getAllUsers']);
 
-    //ManageTransaction
+    //Transactions Expense
+    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);
+    Route::get('/expenses/list', [ExpenseController::class, 'getExpenses']);
+
+    //Transaction Savings
+    Route::post('/add-savings', [SavingsController::class, 'addSavings']);
+    Route::get('/savings/list', [SavingsController::class, 'getSavings']);
+
+    //ManageTransaction supports ADD and GET
     Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']);
     Route::post('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']);
 
