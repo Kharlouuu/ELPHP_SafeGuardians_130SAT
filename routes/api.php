@@ -47,4 +47,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']);
     Route::post('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']);
 
+    
+
 });
