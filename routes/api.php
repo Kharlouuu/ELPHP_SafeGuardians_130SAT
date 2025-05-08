@@ -31,8 +31,10 @@ Route::prefix('auth')->group(function () {
     Route::get('/users/list', [AuthController::class, 'getAllUsers']);
 
     //Transactions Expense
-    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);
-    Route::get('/expenses/list', [ExpenseController::class, 'getExpenses']);
+    Route::post('/add-expense', [ExpenseController::class, 'addExpense']); //ADD
+    Route::get('/expenses/list', [ExpenseController::class, 'getExpenses']); //GET
+    Route::put('/expenses/{id}', [ExpenseController::class, 'updateExpense']); //UPDATE
+    Route::delete('/expenses/{id}', [ExpenseController::class, 'deleteExpense']); //DELETE
 
     //Transaction Savings
     Route::post('/add-savings', [SavingsController::class, 'addSavings']);
