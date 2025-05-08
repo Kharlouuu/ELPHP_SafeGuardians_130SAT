@@ -52,6 +52,8 @@ class SavingsController extends Controller
             'new_total_savings' => $newTotal,
         ]);
     }
+
+    //Get Savings for all users
     public function getSavings(Request $request)
     {
         $validated = $request->validate([
@@ -68,4 +70,47 @@ class SavingsController extends Controller
             'savings' => $savings,
         ]);
     }
+
+    //Can update users
+    public function updateSavings(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+
+        $savings = DB::table('savings')->where('id', $id)->first();
+        if (!$savings) {
+            return response()->json(['error' => 'Savings entry not found'], 404);
+        }
+
+        DB::table('savings')->where('id', $id)->update([
+            'name' => $validated['name'],
+            'amount' => $validated['amount'],
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Savings record updated successfully',
+            'updated_data' => $validated
+        ]);
+    }
+
+    // Users can delete recent added Savings
+    public function deleteSavings($id)
+    {
+        $savings = DB::table('savings')->where('id', $id)->first();
+        if (!$savings) {
+            return response()->json(['error' => 'Savings entry not found'], 404);
+        }
+
+        DB::table('savings')->where('id', $id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Savings record deleted successfully',
+        ]);
+    }
+
 }

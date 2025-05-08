@@ -37,12 +37,14 @@ Route::prefix('auth')->group(function () {
     Route::delete('/expenses/{id}', [ExpenseController::class, 'deleteExpense']); //DELETE
 
     //Transaction Savings
-    Route::post('/add-savings', [SavingsController::class, 'addSavings']);
-    Route::get('/savings/list', [SavingsController::class, 'getSavings']);
+    Route::post('/add-savings', [SavingsController::class, 'addSavings']); //ADD
+    Route::get('/savings/list', [SavingsController::class, 'getSavings']); //GET
+    Route::put('/savings/{id}', [SavingsController::class, 'updateSavings']); //Update
+    Route::delete('/savings/{id}', [SavingsController::class, 'deleteSavings']); //Delete
+
 
     //ManageTransaction supports ADD and GET
     Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']);
     Route::post('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']);
 
-    
 });
