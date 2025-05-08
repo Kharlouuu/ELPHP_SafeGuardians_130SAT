@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\SavingsController;
+use App\Http\Controllers\Api\SavingsManagementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,12 +20,20 @@ Route::get('/ping', function () {
 
 // Auth Routes
 Route::prefix('auth')->group(function () {
+    //Authentication
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+
+    //Transactions
     Route::post('/add-expense', [ExpenseController::class, 'addExpense']);   
     Route::post('/add-savings', [SavingsController::class, 'addSavings']);
+
+    //ManageTransaction
+    Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']);
+    Route::post('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']);
+
     
 });
