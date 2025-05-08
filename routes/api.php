@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExpenseController;
+use App\Http\Controllers\Api\SavingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
-    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);
+    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);   
+    Route::post('/add-savings', [SavingsController::class, 'addSavings']);
     
 });
