@@ -93,6 +93,7 @@ class AuthController extends Controller
 
         return response()->json(['success' => 'Code sent']);
     }
+
     //Reset Password
     public function resetPassword(Request $request)
     {
@@ -116,6 +117,8 @@ class AuthController extends Controller
 
     return response()->json(['success' => 'Password has been reset successfully']);
     }
+
+    //Update Profile Activity
     public function updateProfile(Request $request)
     {
         $request->validate([

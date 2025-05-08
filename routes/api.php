@@ -3,16 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExpenseController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and assigned to the "api"
-| middleware group. Make something great!
-|
 */
 
 // Test route (optional)
@@ -27,4 +23,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('/add-expense', [ExpenseController::class, 'addExpense']);
+    
 });
