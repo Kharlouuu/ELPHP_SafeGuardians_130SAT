@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -32,14 +33,21 @@ class AuthController extends Controller
     //Login User 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+     $request->validate([
+    'email' => 'required|email',
+    'password' => 'required',
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        if ($user && Hash::check($request->password, $user->password)) {
+    if ($user) {
+        $passwordMatch = Hash::check($request->password, $user->password);
+    
+        // Logging for debug (will be saved in storage/logs/laravel.log)
+        Log::info("Login attempt for {$request->email}");
+        Log::info("Password match: " . ($passwordMatch ? 'yes' : 'no'));
+    
+        if ($passwordMatch) {
             return response()->json([
                 'success' => 'Login successful',
                 'user_id' => $user->id,
@@ -47,10 +55,12 @@ class AuthController extends Controller
                 'email' => $user->email,
             ]);
         }
-
-        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+    
+    return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
+    //Forgot Password
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -83,9 +93,9 @@ class AuthController extends Controller
 
         return response()->json(['success' => 'Code sent']);
     }
-
+    //Reset Password
     public function resetPassword(Request $request)
-{
+    {
     $request->validate([
         'email' => 'required|email',
         'reset_code' => 'required',
@@ -105,7 +115,7 @@ class AuthController extends Controller
     $user->save();
 
     return response()->json(['success' => 'Password has been reset successfully']);
-}
+    }
     public function updateProfile(Request $request)
     {
         $request->validate([
