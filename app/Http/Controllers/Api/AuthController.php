@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
+
 class AuthController extends Controller
 {
     //Register User
@@ -49,8 +50,12 @@ class AuthController extends Controller
         Log::info("Password match: " . ($passwordMatch ? 'yes' : 'no'));
     
         if ($passwordMatch) {
+             // Generate Sanctum token
+            $token = $user->createToken('api-token')->plainTextToken;
+
             return response()->json([
                 'success' => 'Login successful',
+                'token' => $token,
                 'user_id' => $user->id,
                 'username' => $user->username,
                 'email' => $user->email,

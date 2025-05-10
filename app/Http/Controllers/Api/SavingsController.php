@@ -11,48 +11,37 @@ class SavingsController extends Controller
     public function addSavings(Request $request)
     {
         $validated = $request->validate([
-            'user_id' => 'required|integer',
-            'name' => 'required|string',
-            'amount' => 'required|numeric|min:0.01',
-        ]);
+        'user_id' => 'required|integer',
+        'name' => 'required|string',
+          'amount' => 'required|numeric|min:0.01',
+    ]);
 
-        $userId = $validated['user_id'];
-        $name = $validated['name'];
-        $amount = $validated['amount'];
+      $userId = $validated['user_id'];
+$name = $validated['name'];
+$amount = $validated['amount'];
 
-        // Retrieve current savings for the user
-        $user = DB::table('users')->where('id', $userId)->first();
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
+// Check if user exists
+$user = DB::table('users')->where('id', $userId)->first();
+if (!$user) {
+    return response()->json(['error' => 'User not found'], 404);
+}
 
-        $currentSavings = $user->total_savings ?? 0;
-        $newTotal = $currentSavings + $amount;
+// Insert savings record (no update to total_savings)
+DB::table('savings')->insert([
+    'user_id' => $userId,
+    'name' => $name,
+    'amount' => $amount,
+    'created_at' => now(),
+    'updated_at' => now(),
+]);
 
-        // Update user's total savings
-        DB::table('users')->where('id', $userId)->update([
-            'total_savings' => $newTotal,
-        ]);
-
-        // Insert new savings record
-        DB::table('savings')->insert([
-            'user_id' => $userId,
-            'name' => $name,
-            'amount' => $amount,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        // Return success response
-        return response()->json([
-            'success' => true,
-            'message' => 'You have successfully added savings for this month',
-            'savings_name' => $name,
-            'savings_amount' => $amount,
-            'new_total_savings' => $newTotal,
-        ]);
-    }
-
+return response()->json([
+    'success' => true,
+    'message' => 'You have successfully added savings for this month',
+    'savings_name' => $name,
+    'savings_amount' => $amount,
+]);
+}
     //Get Savings for all users
     public function getSavings(Request $request)
     {

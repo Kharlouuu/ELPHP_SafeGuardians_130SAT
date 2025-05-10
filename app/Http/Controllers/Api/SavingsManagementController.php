@@ -8,26 +8,33 @@ use Illuminate\Support\Facades\DB;
 
 class SavingsManagementController extends Controller
 {
-    public function getTotalSavings(Request $request)
-    {
-        $validated = $request->validate([
-            'user_id' => 'required|integer',
-        ]);
+   public function getTotalSavings(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|integer',
+    ]);
 
-        $user = DB::table('users')->where('id', $validated['user_id'])->first();
+    $userId = $request->query('user_id');
 
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'error' => 'User not found',
-            ], 404);
-        }
+    $user = DB::table('users')
+    ->where('id', $userId)
+    ->select('username', 'email', 'total_savings')
+    ->first();
 
-        return response()->json([
-            'success' => true,
-            'total_savings' => $user->total_savings ?? 0,
-        ]);
-    }
+    if (!$user) {
+    return response()->json([
+        'success' => false,
+        'message' => 'User not found'
+    ], 404);
+}
+
+    return response()->json([
+    'success' => true,
+    'total_savings' => $user->total_savings,
+    'username' => $user->username,
+    'email' => $user->email,
+    ]);
+}
 
     public function addMonthlySavings(Request $request)
     {

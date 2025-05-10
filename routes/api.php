@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\SavingsController;
 use App\Http\Controllers\Api\SavingsManagementController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\ChallengeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,10 @@ Route::prefix('auth')->group(function () {
     //Get All Users
     Route::get('/users/list', [AuthController::class, 'getAllUsers']);
 
+    //ManageTransaction supports ADD and GET
+    Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']); //ADD
+    Route::get('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']); //GET
+
     //Transactions Expense
     Route::post('/add-expense', [ExpenseController::class, 'addExpense']); //ADD
     Route::get('/expenses/list', [ExpenseController::class, 'getExpenses']); //GET
@@ -42,11 +48,11 @@ Route::prefix('auth')->group(function () {
     Route::put('/savings/{id}', [SavingsController::class, 'updateSavings']); //Update
     Route::delete('/savings/{id}', [SavingsController::class, 'deleteSavings']); //Delete
 
+    //View all Transaction Expenses and Savings
+    Route::get('/transactions', [TransactionController::class, 'getUserTransactions']);
 
-    //ManageTransaction supports ADD and GET
-    Route::post('/manage/add-savings', [SavingsManagementController::class, 'addMonthlySavings']);
-    Route::post('/manage/get-savings', [SavingsManagementController::class, 'getTotalSavings']);
-
-    
-
-});
+    //Challenge and Add Goal
+    Route::post('/add-goal', [ChallengeController::class, 'addGoal']); //Add Goal
+    Route::delete('/delete-goal/{id}', [ChallengeController::class, 'deleteGoal']); //Delete Goal
+    Route::post('/save-today', [ChallengeController::class, 'saveToday']); //Add Savings For this day
+    });
